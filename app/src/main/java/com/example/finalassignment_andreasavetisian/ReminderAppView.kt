@@ -52,7 +52,7 @@ fun MainContentView(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = HOME_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView() }
-        composable( route = REMINDER_ROUTE){ NoteView(reminderVM) }
+        composable( route = REMINDER_ROUTE){ ReminderView(reminderVM) }
     }
 }
 
@@ -61,13 +61,13 @@ fun HomeView() {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(Color(0xFFD8BF75))) {
+        .background(Color(0xFF000000))) {
 
     }
 }
 
 @Composable
-fun NoteView(reminderVM: ReminderViewModel) {
+fun ReminderView(reminderVM: ReminderViewModel) {
 
     var reminderTitle by remember { mutableStateOf("") }
     var reminderNotes by remember { mutableStateOf("") }
@@ -84,30 +84,39 @@ fun NoteView(reminderVM: ReminderViewModel) {
         OutlinedTextField(
             value = reminderTitle ,
             onValueChange = { reminderTitle = it },
-            label = { Text(text = "Todo note") }
+            label = { Text(text = "Title") }
         )
         OutlinedTextField(
             value = reminderNotes ,
             onValueChange = { reminderNotes = it },
-            label = { Text(text = "Todo note") }
+            label = { Text(text = "Notes") }
         )
         OutlinedTextField(
             value = reminderDate ,
             onValueChange = { reminderDate = it },
-            label = { Text(text = "Todo note") }
+            label = { Text(text = "Date") }
         )
         OutlinedTextField(
             value = reminderTime ,
             onValueChange = { reminderTime = it },
-            label = { Text(text = "Todo note") }
+            label = { Text(text = "Time") }
         )
 
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedButton(
-            onClick = { reminderVM.addReminder( Reminder(reminderTitle, reminderNotes, reminderDate, reminderTime) ) }
+            onClick = {
+                reminderVM.addReminder(
+                    Reminder(
+                        reminderTitle,
+                        reminderNotes,
+                        reminderDate,
+                        reminderTime
+                    )
+                )
+            }
         ) {
-            Text(text = "Add todo note")
+            Text(text = "Add reminder")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -127,7 +136,7 @@ fun NoteView(reminderVM: ReminderViewModel) {
 fun BottomBarView(navController: NavHostController) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFFF7CA43)),
+        .background(Color(0xFF1C1C1E)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -137,7 +146,7 @@ fun BottomBarView(navController: NavHostController) {
             modifier = Modifier.clickable {  navController.navigate(HOME_ROUTE)  })
         Icon(
             painter = painterResource(id = R.drawable.ic_reminder),
-            contentDescription = "note",
+            contentDescription = "reminder",
             modifier = Modifier.clickable {  navController.navigate(REMINDER_ROUTE)  })
     }
 }
@@ -148,12 +157,12 @@ fun TopBarView() {
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFFF7CA43))
+        .background(Color(0xFF1C1C1E))
         .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = userVM.username.value)
+        Text(text = userVM.username.value, color = Color.White)
         OutlinedButton(onClick = { userVM.logoutUser() }) {
             Text(text = "Log out")
         }
@@ -168,29 +177,39 @@ fun LoginView(userVM: UserViewModel) {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
-        verticalArrangement = Arrangement.SpaceEvenly,
+            .fillMaxSize()
+            .background(Color(0xFF1C1C1E))
+            .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         OutlinedTextField(
             value = email ,
             onValueChange = { email = it },
-            label = { Text(text = "Email") })
+            label = { Text(text = "Email") }
+        )
+
         OutlinedTextField(
             value = pw ,
             onValueChange = { pw = it },
             label = { Text(text = "Password") },
-            visualTransformation = PasswordVisualTransformation())
-        OutlinedButton(onClick = { userVM.loginUser(email,pw) }) {
+            visualTransformation = PasswordVisualTransformation()
+        )
+
+        OutlinedButton(
+            onClick = { userVM.loginUser(email,pw) },
+            modifier = Modifier.padding(10.dp)
+        ) {
             Text(text = "Login")
         }
-    }
-    if (userVM.errorMessage.value.isNotEmpty()) {
-        Text(
-            text = userVM.errorMessage.value,
-            fontSize = 18.sp,
-            color = Color.Red
-        )
+
+        if (userVM.errorMessage.value.isNotEmpty()) {
+            Text(
+                text = userVM.errorMessage.value,
+                fontSize = 18.sp,
+                color = Color.Red
+            )
+        }
+
     }
 }

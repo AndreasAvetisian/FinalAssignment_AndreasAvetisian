@@ -1,6 +1,5 @@
 package com.example.finalassignment_andreasavetisian
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
