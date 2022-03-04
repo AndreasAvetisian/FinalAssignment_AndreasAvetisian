@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,6 +28,7 @@ fun MainView() {
 
     if(userVM.username.value.isEmpty()){
         LoginView(userVM)
+        userVM.errorMessage.value = ""
     }else {
         MainScaffoldView()
     }
@@ -183,5 +185,12 @@ fun LoginView(userVM: UserViewModel) {
         OutlinedButton(onClick = { userVM.loginUser(email,pw) }) {
             Text(text = "Login")
         }
+    }
+    if (userVM.errorMessage.value.isNotEmpty()) {
+        Text(
+            text = userVM.errorMessage.value,
+            fontSize = 18.sp,
+            color = Color.Red
+        )
     }
 }
