@@ -1,10 +1,8 @@
 package com.example.finalassignment_andreasavetisian
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,10 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,7 +22,7 @@ import kotlinx.coroutines.launch
 
 const val HOME_ROUTE = "home"
 const val REMINDER_ROUTE = "reminder"
-const val SETTINGS_ROUTE = "reminder"
+const val SETTINGS_ROUTE = "settings"
 
 @Composable
 fun MainView() {
@@ -42,45 +38,45 @@ fun MainView() {
 
 @Composable
 fun MainScaffoldView() {
-
+    val darkMode = remember { mutableStateOf(false)}
     val navController = rememberNavController()
     val scState = rememberScaffoldState( rememberDrawerState(DrawerValue.Closed) )
 
     Scaffold(
         scaffoldState = scState,
-        topBar = { TopBarView(scState) },
-        bottomBar = { BottomBarView(navController) },
-        content = { MainContentView(navController) },
-        drawerContent = { DrawerLayoutView(navController) }
+        topBar = { TopBarView(scState, darkMode) },
+        bottomBar = { BottomBarView(navController, darkMode) },
+        content = { MainContentView(navController, darkMode) },
+        drawerContent = { DrawerLayoutView(navController, scState, darkMode) }
     )
 }
 
 @Composable
-fun MainContentView(navController: NavHostController) {
+fun MainContentView(navController: NavHostController, darkMode: MutableState<Boolean>) {
     val reminderVM = viewModel<ReminderViewModel>()
 
-    NavHost(navController = navController, startDestination = HOME_ROUTE ){
-        composable( route = HOME_ROUTE ){ HomeView() }
-        composable( route = REMINDER_ROUTE){ ReminderView(reminderVM) }
-        composable( route = SETTINGS_ROUTE){ SettingView() }
+    NavHost(navController = navController, startDestination = SETTINGS_ROUTE ){
+        composable( route = HOME_ROUTE ){ HomeView(darkMode) }
+        composable( route = REMINDER_ROUTE){ ReminderView(reminderVM, darkMode) }
+        composable( route = SETTINGS_ROUTE){ SettingView(darkMode) }
     }
 }
 
 @Composable
-fun HomeView() {
+fun HomeView(darkMode: MutableState<Boolean>) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.White)
             .padding(10.dp)
     ) {
-        Text(text = "HOME", color = Color.White)
+        Text(text = "HOME", color = Color.Black)
     }
 }
 
 @Composable
-fun ReminderView(reminderVM: ReminderViewModel) {
+fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>) {
 
     var reminderTitle by remember { mutableStateOf("") }
     var reminderNotes by remember { mutableStateOf("") }
@@ -89,7 +85,7 @@ fun ReminderView(reminderVM: ReminderViewModel) {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(Color(0xFFEDFF8A))
+        .background(Color(0xFFFFFFFF))
         .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -146,21 +142,55 @@ fun ReminderView(reminderVM: ReminderViewModel) {
 }
 
 @Composable
-fun SettingView() {
+fun SettingView(darkMode: MutableState<Boolean>) {
+
+    var darkMode by remember { mutableStateOf(false)}
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(if (!darkMode) Color.White else Color.Black)
             .padding(10.dp)
     ) {
-        Text(text = "Settings")
+
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 0.dp, 10.dp)
+        ) {
+            Text(
+                text = "Settings",
+                fontSize = 24.sp,
+                color = if (!darkMode) Color.Black else Color.White
+            )
+        }
+
+        Divider(thickness = 2.dp)
+
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)
+        ) {
+            Checkbox(
+                checked = darkMode,
+                onCheckedChange = { darkMode = !darkMode }
+            )
+            Text(
+                text = "Dark mode",
+                color = if (darkMode) Color.White else Color.Black
+            )
+        }
+
     }
 }
 
 @Composable
-fun BottomBarView(navController: NavHostController) {
+fun BottomBarView(navController: NavHostController, darkMode: MutableState<Boolean>) {
+
+    var darkMode by remember { mutableStateOf(false)}
+
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFF1C1C1E))
+        .background( if (darkMode) Color(0xFF1C1C1E) else Color(0xFF4586E3) )
         .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
@@ -181,14 +211,15 @@ fun BottomBarView(navController: NavHostController) {
 }
 
 @Composable
-fun TopBarView(scState: ScaffoldState) {
-    val userVM = viewModel<UserViewModel>()
+fun TopBarView(scState: ScaffoldState, darkMode: MutableState<Boolean>) {
 
+    //var darkMode by remember { mutableStateOf(false)}
+    val userVM = viewModel<UserViewModel>()
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFF1C1C1E))
+        .background(Color(0xFF4586E3))
         .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -208,8 +239,10 @@ fun TopBarView(scState: ScaffoldState) {
 }
 
 @Composable
-fun DrawerLayoutView(navController: NavHostController) {
+fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState, darkMode: MutableState<Boolean>) {
+
     val userVM = viewModel<UserViewModel>()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -223,7 +256,10 @@ fun DrawerLayoutView(navController: NavHostController) {
 
         OutlinedButton(
             onClick = {
-                navController.navigate(REMINDER_ROUTE)
+                navController.navigate(SETTINGS_ROUTE)
+                scope.launch {
+                    scState.drawerState.close()
+                }
             },
             colors = ButtonDefaults
                 .buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
@@ -237,7 +273,7 @@ fun DrawerLayoutView(navController: NavHostController) {
             colors = ButtonDefaults
                 .buttonColors(backgroundColor = Color.Red, contentColor = Color.White)
         ) {
-            Text(text = "Log out")
+            Text(text = "Sign out")
         }
     }
 }
