@@ -174,11 +174,13 @@ fun TopBarView() {
 fun LoginView(userVM: UserViewModel) {
     var email by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
+    var darkMode by remember { mutableStateOf(false)}
+    var isEmptyField by remember { mutableStateOf(false)}
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1C1C1E))
+            .background(if (darkMode) Color(0xFF1C1C1E) else Color.White)
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -203,6 +205,23 @@ fun LoginView(userVM: UserViewModel) {
             Text(text = "Login")
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Checkbox(
+                checked = darkMode,
+                onCheckedChange = { darkMode = !darkMode }
+            )
+            Text(
+                text = "Dark mode",
+                color = if (darkMode) Color.White else Color.Black
+            )
+        }
+
         if (userVM.errorMessage.value.isNotEmpty()) {
             Text(
                 text = userVM.errorMessage.value,
@@ -210,6 +229,5 @@ fun LoginView(userVM: UserViewModel) {
                 color = Color.Red
             )
         }
-
     }
 }
