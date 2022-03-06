@@ -3,6 +3,8 @@ package com.example.finalassignment_andreasavetisian
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,7 +57,7 @@ fun MainScaffoldView() {
 fun MainContentView(navController: NavHostController, darkMode: MutableState<Boolean>) {
     val reminderVM = viewModel<ReminderViewModel>()
 
-    NavHost(navController = navController, startDestination = SETTINGS_ROUTE ){
+    NavHost(navController = navController, startDestination = REMINDER_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView(darkMode) }
         composable( route = REMINDER_ROUTE){ ReminderView(reminderVM, darkMode) }
         composable( route = SETTINGS_ROUTE){ SettingView(darkMode) }
@@ -130,14 +132,23 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        reminderVM.reminders.value.forEach {
-            Divider(thickness = 2.dp)
-            Text(text = it.title)
-            Text(text = it.notes)
-            Text(text = it.date)
-            Text(text = it.time)
+
+        LazyColumn {
+            items(reminderVM.reminders.value) { item ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Column() {
+                        Text(text = "Title: ${item.title}")
+                        Text(text = "Notes: ${item.notes}")
+                        Text(text = "Date: ${item.date}")
+                        Text(text = "Time: ${item.time}")
+                    }
+                }
+            }
         }
-        Divider(thickness = 2.dp)
     }
 }
 
@@ -190,7 +201,7 @@ fun BottomBarView(navController: NavHostController, darkMode: MutableState<Boole
 
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background( if (darkMode) Color(0xFF1C1C1E) else Color(0xFF4586E3) )
+        .background(if (darkMode) Color(0xFF1C1C1E) else Color(0xFF4586E3))
         .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
