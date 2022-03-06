@@ -1,8 +1,10 @@
 package com.example.finalassignment_andreasavetisian
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -185,10 +188,13 @@ fun LoginView(userVM: UserViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        OutlinedTextField(
+        TextField(
             value = email ,
             onValueChange = { email = it },
-            label = { Text(text = "Email") }
+            label = { Text(text = "Email") },
+            colors = TextFieldDefaults
+                .outlinedTextFieldColors(backgroundColor = Color.Gray, textColor = Color.Black),
+            shape = RoundedCornerShape(20)
         )
 
         OutlinedTextField(
@@ -200,7 +206,10 @@ fun LoginView(userVM: UserViewModel) {
 
         OutlinedButton(
             onClick = { userVM.loginUser(email,pw) },
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp),
+            colors = ButtonDefaults
+                .buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
         ) {
             Text(text = "Login")
         }
