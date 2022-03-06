@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,28 +93,47 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        OutlinedTextField(
-            value = reminderTitle ,
-            onValueChange = { reminderTitle = it },
-            label = { Text(text = "Title") }
-        )
-        OutlinedTextField(
-            value = reminderNotes ,
-            onValueChange = { reminderNotes = it },
-            label = { Text(text = "Notes") }
-        )
-        OutlinedTextField(
-            value = reminderDate ,
-            onValueChange = { reminderDate = it },
-            label = { Text(text = "Date") }
-        )
-        OutlinedTextField(
-            value = reminderTime ,
-            onValueChange = { reminderTime = it },
-            label = { Text(text = "Time") }
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            OutlinedTextField(
+                value = reminderTitle ,
+                onValueChange = { reminderTitle = it },
+                label = { Text(text = "Title") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
 
-        Spacer(modifier = Modifier.height(10.dp))
+            OutlinedTextField(
+                value = reminderDate ,
+                onValueChange = { reminderDate = it },
+                label = { Text(text = "Date") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            OutlinedTextField(
+                value = reminderNotes ,
+                onValueChange = { reminderNotes = it },
+                label = { Text(text = "Notes") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+
+            OutlinedTextField(
+                value = reminderTime ,
+                onValueChange = { reminderTime = it },
+                label = { Text(text = "Time") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+        }
 
         OutlinedButton(
             onClick = {
@@ -125,26 +145,54 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
                         reminderTime
                     )
                 )
-            }
+            },
+            modifier = Modifier.padding(0.dp, 10.dp),
+            colors = ButtonDefaults
+                .buttonColors(backgroundColor = Color(0xFF76FF03), contentColor = Color.Black)
         ) {
-            Text(text = "Add reminder")
+            Text(
+                text = "Add reminder",
+                fontSize = 16.sp
+            )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
+        Divider(thickness = 2.dp)
 
         LazyColumn {
             items(reminderVM.reminders.value) { item ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(24.dp, 12.dp)
                 ) {
-                    Column() {
-                        Text(text = "Title: ${item.title}")
-                        Text(text = "Notes: ${item.notes}")
-                        Text(text = "Date: ${item.date}")
-                        Text(text = "Time: ${item.time}")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFF4586E3))
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "Title: ${item.title}",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Notes: ${item.notes}",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Date: ${item.date}",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = "Time: ${item.time}",
+                            fontSize = 20.sp,
+                            color = Color.White
+                        )
                     }
                 }
             }
