@@ -15,15 +15,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 
 
 const val HOME_ROUTE = "home"
 const val REMINDER_ROUTE = "reminder"
+const val SETTINGS_ROUTE = "reminder"
 
 @Composable
 fun MainView() {
@@ -41,11 +44,14 @@ fun MainView() {
 fun MainScaffoldView() {
 
     val navController = rememberNavController()
+    val scState = rememberScaffoldState( rememberDrawerState(DrawerValue.Closed) )
 
     Scaffold(
-        topBar = { TopBarView() },
+        scaffoldState = scState,
+        topBar = { TopBarView(scState) },
         bottomBar = { BottomBarView(navController) },
-        content = { MainContentView(navController) }
+        content = { MainContentView(navController) },
+        drawerContent = { DrawerLayoutView(navController) }
     )
 }
 
@@ -56,16 +62,20 @@ fun MainContentView(navController: NavHostController) {
     NavHost(navController = navController, startDestination = HOME_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView() }
         composable( route = REMINDER_ROUTE){ ReminderView(reminderVM) }
+        composable( route = SETTINGS_ROUTE){ SettingView() }
     }
 }
 
 @Composable
 fun HomeView() {
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(0xFF000000))) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(10.dp)
+    ) {
+        Text(text = "HOME", color = Color.White)
     }
 }
 
@@ -136,27 +146,45 @@ fun ReminderView(reminderVM: ReminderViewModel) {
 }
 
 @Composable
+fun SettingView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+    ) {
+        Text(text = "Settings")
+    }
+}
+
+@Composable
 fun BottomBarView(navController: NavHostController) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .background(Color(0xFF1C1C1E)),
+        .background(Color(0xFF1C1C1E))
+        .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ){
         Icon(
             painter = painterResource(id = R.drawable.ic_home),
             contentDescription = "home",
-            modifier = Modifier.clickable {  navController.navigate(HOME_ROUTE)  })
+            modifier = Modifier.clickable { navController.navigate(HOME_ROUTE) },
+            tint = Color.White
+        )
         Icon(
             painter = painterResource(id = R.drawable.ic_reminder),
             contentDescription = "reminder",
-            modifier = Modifier.clickable {  navController.navigate(REMINDER_ROUTE)  })
+            modifier = Modifier.clickable { navController.navigate(REMINDER_ROUTE) },
+            tint = Color.White
+        )
     }
 }
 
 @Composable
-fun TopBarView() {
+fun TopBarView(scState: ScaffoldState) {
     val userVM = viewModel<UserViewModel>()
+
+    val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -165,8 +193,50 @@ fun TopBarView() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_drawer),
+            contentDescription = "",
+            modifier = Modifier.clickable {
+                scope.launch {
+                    scState.drawerState.open()
+                }
+            },
+            tint = Color.White
+        )
         Text(text = userVM.username.value, color = Color.White)
-        OutlinedButton(onClick = { userVM.logoutUser() }) {
+    }
+}
+
+@Composable
+fun DrawerLayoutView(navController: NavHostController) {
+    val userVM = viewModel<UserViewModel>()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFFFFF))
+            .padding(10.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "Welcome back, ${userVM.username.value}", color = Color.Black)
+
+
+        OutlinedButton(
+            onClick = {
+                navController.navigate(REMINDER_ROUTE)
+            },
+            colors = ButtonDefaults
+                .buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
+        ) {
+            Text(text = "Settings")
+        }
+
+
+        OutlinedButton(
+            onClick = { userVM.logoutUser() },
+            colors = ButtonDefaults
+                .buttonColors(backgroundColor = Color.Red, contentColor = Color.White)
+        ) {
             Text(text = "Log out")
         }
     }
@@ -178,7 +248,6 @@ fun LoginView(userVM: UserViewModel) {
     var email by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
     var darkMode by remember { mutableStateOf(false)}
-    var isEmptyField by remember { mutableStateOf(false)}
 
     Column(
         modifier = Modifier
@@ -188,13 +257,10 @@ fun LoginView(userVM: UserViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        TextField(
+        OutlinedTextField(
             value = email ,
             onValueChange = { email = it },
-            label = { Text(text = "Email") },
-            colors = TextFieldDefaults
-                .outlinedTextFieldColors(backgroundColor = Color.Gray, textColor = Color.Black),
-            shape = RoundedCornerShape(20)
+            label = { Text(text = "Email") }
         )
 
         OutlinedTextField(
