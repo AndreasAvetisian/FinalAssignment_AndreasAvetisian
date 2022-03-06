@@ -168,7 +168,7 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color(0xFF4586E3))
+                            .background(Color(0xFF76FF03))
                             .padding(10.dp),
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.Start
@@ -176,22 +176,22 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
                         Text(
                             text = "Title: ${item.title}",
                             fontSize = 20.sp,
-                            color = Color.White
+                            color = Color.Black
                         )
                         Text(
                             text = "Notes: ${item.notes}",
                             fontSize = 20.sp,
-                            color = Color.White
+                            color = Color.Black
                         )
                         Text(
                             text = "Date: ${item.date}",
                             fontSize = 20.sp,
-                            color = Color.White
+                            color = Color.Black
                         )
                         Text(
                             text = "Time: ${item.time}",
                             fontSize = 20.sp,
-                            color = Color.White
+                            color = Color.Black
                         )
                     }
                 }
