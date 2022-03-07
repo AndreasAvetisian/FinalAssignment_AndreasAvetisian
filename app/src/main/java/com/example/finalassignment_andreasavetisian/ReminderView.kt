@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ReminderView(reminderVM: ReminderViewModel) {
 
-    var reminderId by remember { mutableStateOf(0) }
     var reminderTitle by remember { mutableStateOf("") }
     var reminderNotes by remember { mutableStateOf("") }
     var reminderDate by remember { mutableStateOf("") }
@@ -79,31 +78,51 @@ fun ReminderView(reminderVM: ReminderViewModel) {
                     )
                 }
 
-                OutlinedButton(
-                    onClick = {
-                        reminderVM.addReminder(
-                            Reminder(
-                                reminderId,
-                                reminderTitle,
-                                reminderNotes,
-                                reminderDate,
-                                reminderTime
-                            )
-                        )
-                        reminderId++
-                        reminderTitle = ""
-                        reminderNotes = ""
-                        reminderDate = ""
-                        reminderTime = ""
-                    },
-                    modifier = Modifier.padding(0.dp, 10.dp),
-                    colors = ButtonDefaults
-                        .buttonColors(backgroundColor = Color(0xFF2377A1), contentColor = Color.Black)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 10.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Add reminder",
-                        fontSize = 16.sp
-                    )
+                    OutlinedButton(
+                        onClick = {
+                            reminderVM.addReminder(
+                                Reminder(
+                                    reminderTitle,
+                                    reminderNotes,
+                                    reminderDate,
+                                    reminderTime
+                                )
+                            )
+                            reminderTitle = ""
+                            reminderNotes = ""
+                            reminderDate = ""
+                            reminderTime = ""
+                        },
+                        modifier = Modifier.width(150.dp),
+                        colors = ButtonDefaults
+                            .buttonColors(backgroundColor = Color(0xFF2377A1), contentColor = Color.Black)
+                    ) {
+                        Text(
+                            text = "Add reminder",
+                            fontSize = 16.sp
+                        )
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            reminderVM.deleteAllReminders()
+                        },
+                        modifier = Modifier.width(150.dp),
+                        colors = ButtonDefaults
+                            .buttonColors(backgroundColor = Color.Red, contentColor = Color.Black)
+                    ) {
+                        Text(
+                            text = "Delete all",
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         } else {
@@ -175,34 +194,14 @@ fun ReminderView(reminderVM: ReminderViewModel) {
                                 checked = false,
                                 onCheckedChange = {  }
                             )
-                            Text(text = "Id: ${item.id_num}")
+                            Text(text = "Id: ${item.reminderId}")
                             Icon(
                                 painter = painterResource(R.drawable.ic_delete),
                                 contentDescription = "",
                                 tint = Color.Red,
                                 modifier = Modifier.clickable {
 
-//                                    reminderTitle = reminderTitle
-//                                    reminderNotes = reminderNotes
-//                                    reminderDate = reminderDate
-//                                    reminderTime = reminderTime
-
-                                    reminderVM.deleteReminder(
-                                        Reminder(
-                                            reminderId,
-                                            reminderTitle,
-                                            reminderNotes,
-                                            reminderDate,
-                                            reminderTime
-                                        )
-                                    )
-
-//                                    reminderTitle = ""
-//                                    reminderNotes = ""
-//                                    reminderDate = ""
-//                                    reminderTime = ""
-
-
+                                    reminderVM.deleteReminder(item.reminderId)
 
                                 } // Modifier.clickable
                             ) // Icon
