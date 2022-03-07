@@ -57,7 +57,7 @@ fun ReminderView(reminderVM: ReminderViewModel) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color(0xFF76FF03))
+                            .background(Color(0xFF2377A1))
                             .padding(10.dp),
                         verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.Start
@@ -155,7 +155,7 @@ fun ReminderInputs(reminderVM: ReminderViewModel) {
             },
             modifier = Modifier.padding(0.dp, 10.dp),
             colors = ButtonDefaults
-                .buttonColors(backgroundColor = Color(0xFF76FF03), contentColor = Color.Black)
+                .buttonColors(backgroundColor = Color(0xFF2377A1), contentColor = Color.Black)
         ) {
             Text(
                 text = "Add reminder",
