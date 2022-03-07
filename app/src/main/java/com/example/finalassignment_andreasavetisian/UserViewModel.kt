@@ -6,7 +6,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class UserViewModel: ViewModel() {
-    var username = mutableStateOf("TEST")
+    var username = mutableStateOf("")
     val errorMessage = mutableStateOf("")
 
     fun loginUser( email: String, pw: String) {
