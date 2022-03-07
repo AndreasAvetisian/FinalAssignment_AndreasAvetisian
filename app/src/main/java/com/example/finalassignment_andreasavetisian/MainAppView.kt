@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -182,31 +183,81 @@ fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState) {
             .fillMaxSize()
             .background(Color(0xFFFFFFFF))
             .padding(10.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Welcome back, ${userVM.username.value}", color = Color.Black)
 
-
-        OutlinedButton(
-            onClick = {
-                navController.navigate(SETTINGS_ROUTE)
-                scope.launch {
-                    scState.drawerState.close()
-                }
-            },
-            colors = ButtonDefaults
-                .buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Settings")
+            Icon(
+                painter = painterResource(R.drawable.ic_logo),
+                contentDescription = "",
+                tint = Color(0xFF4586E3)
+            )
+
+            Text(
+                text = "ReminderApp.AA",
+                color = Color(0xFF4586E3),
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 30.dp)
+            )
         }
 
-
-        OutlinedButton(
-            onClick = { userVM.logoutUser() },
-            colors = ButtonDefaults
-                .buttonColors(backgroundColor = Color.Red, contentColor = Color.White)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.8f)
+                .padding(10.dp),
+            horizontalAlignment = Alignment.Start
         ) {
-            Text(text = "Sign out")
+            Text(
+                text = "Welcome back, ",
+                color = Color(0xFF4586E3),
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = userVM.username.value,
+                fontSize = 20.sp,
+                color = Color(0xFF4586E3)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(1f)
+                .padding(10.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            OutlinedButton(
+                onClick = {
+                    navController.navigate(SETTINGS_ROUTE)
+                    scope.launch {
+                        scState.drawerState.close()
+                    }
+                },
+                colors = ButtonDefaults
+                    .buttonColors(backgroundColor = Color.Gray, contentColor = Color.White)
+            ) {
+                Text(text = "Settings")
+            }
+
+
+            OutlinedButton(
+                onClick = { userVM.logoutUser() },
+                colors = ButtonDefaults
+                    .buttonColors(backgroundColor = Color.Red, contentColor = Color.White)
+            ) {
+                Text(text = "Sign out")
+            }
         }
     }
 }
