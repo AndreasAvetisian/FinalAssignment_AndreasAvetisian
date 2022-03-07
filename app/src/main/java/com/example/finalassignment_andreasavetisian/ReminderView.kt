@@ -16,12 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>) {
-
-    var reminderTitle by remember { mutableStateOf("") }
-    var reminderNotes by remember { mutableStateOf("") }
-    var reminderDate by remember { mutableStateOf("") }
-    var reminderTime by remember { mutableStateOf("") }
+fun ReminderView(reminderVM: ReminderViewModel) {
 
     var isHidden by remember { mutableStateOf(false) }
 
@@ -33,72 +28,7 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
     ) {
 
         if (!isHidden) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    OutlinedTextField(
-                        value = reminderTitle ,
-                        onValueChange = { reminderTitle = it },
-                        label = { Text(text = "Title") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-
-                    OutlinedTextField(
-                        value = reminderDate ,
-                        onValueChange = { reminderDate = it },
-                        label = { Text(text = "Date") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    OutlinedTextField(
-                        value = reminderNotes ,
-                        onValueChange = { reminderNotes = it },
-                        label = { Text(text = "Notes") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-
-                    OutlinedTextField(
-                        value = reminderTime ,
-                        onValueChange = { reminderTime = it },
-                        label = { Text(text = "Time") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-                }
-
-                OutlinedButton(
-                    onClick = {
-                        reminderVM.addReminder(
-                            Reminder(
-                                reminderTitle,
-                                reminderNotes,
-                                reminderDate,
-                                reminderTime
-                            )
-                        )
-                    },
-                    modifier = Modifier.padding(0.dp, 10.dp),
-                    colors = ButtonDefaults
-                        .buttonColors(backgroundColor = Color(0xFF76FF03), contentColor = Color.Black)
-                ) {
-                    Text(
-                        text = "Add reminder",
-                        fontSize = 16.sp
-                    )
-                }
-            }
+            ReminderInputs(reminderVM)
         } else {
             Column {}
         }
@@ -155,6 +85,82 @@ fun ReminderView(reminderVM: ReminderViewModel, darkMode: MutableState<Boolean>)
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ReminderInputs(reminderVM: ReminderViewModel) {
+
+    var reminderTitle by remember { mutableStateOf("") }
+    var reminderNotes by remember { mutableStateOf("") }
+    var reminderDate by remember { mutableStateOf("") }
+    var reminderTime by remember { mutableStateOf("") }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            OutlinedTextField(
+                value = reminderTitle ,
+                onValueChange = { reminderTitle = it },
+                label = { Text(text = "Title") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+
+            OutlinedTextField(
+                value = reminderDate ,
+                onValueChange = { reminderDate = it },
+                label = { Text(text = "Date") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            OutlinedTextField(
+                value = reminderNotes ,
+                onValueChange = { reminderNotes = it },
+                label = { Text(text = "Notes") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+
+            OutlinedTextField(
+                value = reminderTime ,
+                onValueChange = { reminderTime = it },
+                label = { Text(text = "Time") },
+                modifier = Modifier.width(150.dp),
+                textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
+            )
+        }
+
+        OutlinedButton(
+            onClick = {
+                reminderVM.addReminder(
+                    Reminder(
+                        reminderTitle,
+                        reminderNotes,
+                        reminderDate,
+                        reminderTime
+                    )
+                )
+            },
+            modifier = Modifier.padding(0.dp, 10.dp),
+            colors = ButtonDefaults
+                .buttonColors(backgroundColor = Color(0xFF76FF03), contentColor = Color.Black)
+        ) {
+            Text(
+                text = "Add reminder",
+                fontSize = 16.sp
+            )
         }
     }
 }
