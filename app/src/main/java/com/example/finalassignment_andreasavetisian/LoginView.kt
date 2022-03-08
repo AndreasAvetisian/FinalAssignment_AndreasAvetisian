@@ -21,6 +21,7 @@ fun LoginView(userVM: UserViewModel) {
     var pw by remember { mutableStateOf("") }
     //var darkMode by remember { mutableStateOf(false) }
     var isHiddenPw by remember { mutableStateOf(true) }
+    var country by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -93,9 +94,15 @@ fun LoginView(userVM: UserViewModel) {
                     )
                 }
             )
+            
+            OutlinedTextField(
+                value = country, 
+                onValueChange = { country = it },
+                label = { Text(text = "Country") }
+            )
 
             OutlinedButton(
-                onClick = { userVM.loginUser(email,pw) },
+                onClick = { userVM.loginUser(email, pw, country) },
                 modifier = Modifier
                     .padding(10.dp),
                 colors = ButtonDefaults

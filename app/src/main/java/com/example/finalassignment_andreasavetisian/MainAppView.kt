@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
 
@@ -168,7 +169,21 @@ fun TopBarView(scState: ScaffoldState) {
             },
             tint = Color.White
         )
-        Text(text = userVM.username.value, color = Color.White)
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = "https://countryflagsapi.com/png/${userVM.countryName.value}",
+                contentDescription = "",
+                modifier = Modifier.size(36.dp)
+            )
+            Text(
+                text = userVM.username.value,
+                color = Color.White,
+                modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
+            )
+        }
     }
 }
 
