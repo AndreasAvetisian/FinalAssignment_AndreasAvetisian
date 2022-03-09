@@ -33,11 +33,13 @@ const val SETTINGS_ROUTE = "settings"
 @Composable
 fun MainView() {
     val userVM = viewModel<UserViewModel>()
-
+//------------------------------------------------------------------------
+    //userVM.successMessage.value = "Logged in successfully"
+//------------------------------------------------------------------------
     if(userVM.successMessage.value.isEmpty()){
         LoginView(userVM)
         userVM.errorMessage.value = ""
-    }else {
+    } else {
         MainScaffoldView()
     }
 }
@@ -59,11 +61,10 @@ fun MainScaffoldView() {
 
 @Composable
 fun MainContentView(navController: NavHostController) {
-    val reminderVM = viewModel<ReminderViewModel>()
 
-    NavHost(navController = navController, startDestination = SETTINGS_ROUTE ){
+    NavHost(navController = navController, startDestination = REMINDER_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView() }
-        composable( route = REMINDER_ROUTE){ ReminderView(reminderVM) }
+        composable( route = REMINDER_ROUTE){ ReminderView() }
         composable( route = SETTINGS_ROUTE){ SettingView() }
     }
 }
@@ -251,8 +252,6 @@ fun SettingView() {
                 modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
             )
         }
-
-        // Password: 123456
 
 //        Row(
 //            modifier = Modifier

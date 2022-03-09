@@ -14,6 +14,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun LoginView(userVM: UserViewModel) {
@@ -27,6 +29,11 @@ fun LoginView(userVM: UserViewModel) {
     var signIn by remember { mutableStateOf(false) }
 
     //var darkMode by remember { mutableStateOf(false) }
+
+//---------------------------------------------------------------------------
+//    Firebase.auth
+//        .signInWithEmailAndPassword("andreas@andreas.com", "andreas")
+//---------------------------------------------------------------------------
 
 
 
