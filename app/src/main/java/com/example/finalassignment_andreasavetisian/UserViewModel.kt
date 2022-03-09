@@ -9,20 +9,21 @@ import com.google.firebase.ktx.Firebase
 
 class UserViewModel: ViewModel() {
 
-    val fAuth = Firebase.auth
-    val fireStore = Firebase.firestore
+    private val fAuth = Firebase.auth
+    private val fireStore = Firebase.firestore
 
     var username = mutableStateOf("")
-    val errorMessage = mutableStateOf("")
+    var successMessage = mutableStateOf("")
+    var errorMessage = mutableStateOf("")
     var countryName = mutableStateOf("")
 
-
-    fun loginUser( email: String, pw: String, country: String) {
+    fun signinUser(name: String, email: String, pw: String, country: String) {
         fAuth
-            .signInWithEmailAndPassword(email, pw)
+            .createUserWithEmailAndPassword(email, pw)
             .addOnSuccessListener {
-                username.value = email
+                successMessage.value = "Registration completed successfully!"
                 countryName.value = country
+                username.value = name
 
                 fireStore
                     .collection("flags")
@@ -34,6 +35,37 @@ class UserViewModel: ViewModel() {
                     .addOnFailureListener { error ->
                         Log.d("********", error.message.toString())
                     }
+
+                fireStore
+                    .collection("userNames")
+                    .document(it.user!!.uid)
+                    .set( UserName(name) )
+                    .addOnSuccessListener {
+                        Log.d("********", "User name added")
+                    }
+                    .addOnFailureListener { error ->
+                        Log.d("********", error.message.toString())
+                    }
+            }
+
+        fAuth
+            .signInWithEmailAndPassword(email, pw)
+            .addOnSuccessListener {
+                username.value = name
+                errorMessage.value = ""
+            }
+            .addOnFailureListener {
+                errorMessage.value = "Incorrect email or password"
+            }
+    }
+
+
+    fun loginUser(name: String, email: String, pw: String) {
+        fAuth
+            .signInWithEmailAndPassword(email, pw)
+            .addOnSuccessListener {
+                username.value = name
+                errorMessage.value = ""
             }
             .addOnFailureListener {
                 errorMessage.value = "Incorrect email or password"
