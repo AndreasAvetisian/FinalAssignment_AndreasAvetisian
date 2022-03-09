@@ -138,7 +138,7 @@ fun SettingView() {
         
         Spacer(modifier = Modifier.height(10.dp))
 
-        Column() {
+        Column {
 
             OutlinedTextField(
                 value = name ,
@@ -207,7 +207,26 @@ fun SettingView() {
             OutlinedButton(
                 onClick = {
 
-                    userVM.modifyUserInfo(name, email, pw, country)
+                    if (name.isNotEmpty()) {
+                        userVM.modifyUserName(name)
+                        name = ""
+                        userVM.successMessage.value = "Name updated"
+                    }
+                    if (email.isNotEmpty()) {
+                        userVM.modifyUserEmail(email)
+                        email = ""
+                        userVM.successMessage.value = "Email updated"
+                    }
+                    if (pw.isNotEmpty()) {
+                        userVM.modifyUserPassword(pw)
+                        pw = ""
+                        userVM.successMessage.value = "Password updated"
+                    }
+                    if (country.isNotEmpty()) {
+                        userVM.modifyUserFlag(country)
+                        country = ""
+                        userVM.successMessage.value = "Country updated"
+                    }
 
                 },
                 colors = ButtonDefaults

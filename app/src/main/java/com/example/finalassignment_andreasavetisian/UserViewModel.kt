@@ -1,10 +1,7 @@
 package com.example.finalassignment_andreasavetisian
 
 import android.util.Log
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -93,24 +90,12 @@ class UserViewModel: ViewModel() {
         successMessage.value = ""
     }
 
-    fun modifyUserInfo(name: String, email: String, pw: String, country: String) {
+    fun modifyUserName(name: String) {
 
-        if (name.isNotEmpty() && email.isNotEmpty() && pw.isNotEmpty() && country.isNotEmpty()) {
+        if (name.isNotEmpty()) {
             val nameValue = hashMapOf(
                 "userName" to name
             )
-
-            val flagValue = hashMapOf(
-                "countryFlag" to country
-            )
-
-            fAuth
-                .currentUser
-                ?.updateEmail(email)
-
-            fAuth
-                .currentUser
-                ?.updatePassword(pw)
 
             fireStore
                 .collection("userNames")
@@ -123,6 +108,21 @@ class UserViewModel: ViewModel() {
                     Log.d("********", error.message.toString())
                 }
 
+            errorMessage.value = ""
+        } else {
+            errorMessage.value = "Please, fill name field"
+            successMessage.value = ""
+        }
+
+    }
+
+    fun modifyUserFlag(country: String) {
+
+        if (country.isNotEmpty()) {
+            val flagValue = hashMapOf(
+                "countryFlag" to country
+            )
+
             fireStore
                 .collection("flags")
                 .document(fAuth.currentUser!!.uid)
@@ -133,9 +133,40 @@ class UserViewModel: ViewModel() {
                 .addOnFailureListener { error ->
                     Log.d("********", error.message.toString())
                 }
+
             errorMessage.value = ""
         } else {
-            errorMessage.value = "Please, fill all of your information"
+            errorMessage.value = "Please, fill country field"
+            successMessage.value = ""
+        }
+
+    }
+
+    fun modifyUserEmail(email: String) {
+
+        if (email.isNotEmpty()) {
+            fAuth
+                .currentUser
+                ?.updateEmail(email)
+
+            errorMessage.value = ""
+        } else {
+            errorMessage.value = "Please, fill email field"
+            successMessage.value = ""
+        }
+
+    }
+
+    fun modifyUserPassword(pw: String) {
+
+        if (pw.isNotEmpty()) {
+            fAuth
+                .currentUser
+                ?.updatePassword(pw)
+
+            errorMessage.value = ""
+        } else {
+            errorMessage.value = "Please, fill password field"
             successMessage.value = ""
         }
 
