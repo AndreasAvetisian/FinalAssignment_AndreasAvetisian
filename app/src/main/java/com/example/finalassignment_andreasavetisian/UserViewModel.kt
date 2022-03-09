@@ -1,7 +1,10 @@
 package com.example.finalassignment_andreasavetisian
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -88,5 +91,53 @@ class UserViewModel: ViewModel() {
             .signOut()
         errorMessage.value = ""
         successMessage.value = ""
+    }
+
+    fun modifyUserInfo(name: String, email: String, pw: String, country: String) {
+
+        if (name.isNotEmpty() && email.isNotEmpty() && pw.isNotEmpty() && country.isNotEmpty()) {
+            val nameValue = hashMapOf(
+                "userName" to name
+            )
+
+            val flagValue = hashMapOf(
+                "countryFlag" to country
+            )
+
+            fAuth
+                .currentUser
+                ?.updateEmail(email)
+
+            fAuth
+                .currentUser
+                ?.updatePassword(pw)
+
+            fireStore
+                .collection("userNames")
+                .document(fAuth.currentUser!!.uid)
+                .set(nameValue)
+                .addOnSuccessListener {
+                    Log.d("********", "User name updated")
+                }
+                .addOnFailureListener { error ->
+                    Log.d("********", error.message.toString())
+                }
+
+            fireStore
+                .collection("flags")
+                .document(fAuth.currentUser!!.uid)
+                .set(flagValue)
+                .addOnSuccessListener {
+                    Log.d("********", "Country flag updated")
+                }
+                .addOnFailureListener { error ->
+                    Log.d("********", error.message.toString())
+                }
+            errorMessage.value = ""
+        } else {
+            errorMessage.value = "Please, fill all of your information"
+            successMessage.value = ""
+        }
+
     }
 }
