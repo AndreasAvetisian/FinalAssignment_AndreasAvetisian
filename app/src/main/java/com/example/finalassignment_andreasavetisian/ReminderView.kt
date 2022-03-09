@@ -15,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -154,39 +155,40 @@ fun ReminderView() {
         var reminderTitleList by remember {
             mutableStateOf(mutableListOf<String>())
         }
-        var reminderNotesList by remember {
-            mutableStateOf(mutableListOf<String>())
-        }
-        var reminderDateList by remember {
-            mutableStateOf(mutableListOf<String>())
-        }
-        var reminderTimeList by remember {
-            mutableStateOf(mutableListOf<String>())
-        }
+//        var reminderNotesList by remember {
+//            mutableStateOf(mutableListOf<String>())
+//        }
+//        var reminderDateList by remember {
+//            mutableStateOf(mutableListOf<String>())
+//        }
+//        var reminderTimeList by remember {
+//            mutableStateOf(mutableListOf<String>())
+//        }
 
         val fireStore = Firebase.firestore
         fireStore
             .collection("reminders")
+            .whereEqualTo("id", Firebase.auth.currentUser!!.uid) // IMPORTANT!!!
             .get()
             .addOnSuccessListener {
 
                 var titleValue = mutableListOf<String>()
-                var notesValue = mutableListOf<String>()
-                var dateValue = mutableListOf<String>()
-                var timeValue = mutableListOf<String>()
+//                var notesValue = mutableListOf<String>()
+//                var dateValue = mutableListOf<String>()
+//                var timeValue = mutableListOf<String>()
                 for (doc in it) {
 
                     titleValue.add(doc.get("title").toString())
                     reminderTitleList = titleValue
 
-                    notesValue.add(doc.get("notes").toString())
-                    reminderNotesList = notesValue
-
-                    dateValue.add(doc.get("date").toString())
-                    reminderDateList = dateValue
-
-                    timeValue.add(doc.get("time").toString())
-                    reminderTimeList = timeValue
+//                    notesValue.add(doc.get("notes").toString())
+//                    reminderNotesList = notesValue
+//
+//                    dateValue.add(doc.get("date").toString())
+//                    reminderDateList = dateValue
+//
+//                    timeValue.add(doc.get("time").toString())
+//                    reminderTimeList = timeValue
 
                 }
 
@@ -195,15 +197,15 @@ fun ReminderView() {
         reminderTitleList.forEach { 
             Text(text = it)
         }
-        reminderNotesList.forEach {
-            Text(text = it)
-        }
-        reminderDateList.forEach {
-            Text(text = it)
-        }
-        reminderTimeList.forEach {
-            Text(text = it)
-        }
+//        reminderNotesList.forEach {
+//            Text(text = it)
+//        }
+//        reminderDateList.forEach {
+//            Text(text = it)
+//        }
+//        reminderTimeList.forEach {
+//            Text(text = it)
+//        }
 
 //----------------------------------------------------------------------------------
 
