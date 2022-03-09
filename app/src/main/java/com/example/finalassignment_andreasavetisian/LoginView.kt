@@ -114,7 +114,7 @@ fun LoginView(userVM: UserViewModel) {
             
             if (logIn) {
                 OutlinedButton(
-                    onClick = { userVM.loginUser(name, email, pw) },
+                    onClick = { userVM.loginUser(email, pw) },
                     modifier = Modifier
                         .padding(10.dp),
                     colors = ButtonDefaults
@@ -166,6 +166,7 @@ fun LoginView(userVM: UserViewModel) {
                             logIn = !logIn
                             signIn = !signIn
                             userVM.successMessage.value = ""
+                            userVM.errorMessage.value = ""
                         }
                     )
                     Text(text = "Log in")
@@ -176,6 +177,7 @@ fun LoginView(userVM: UserViewModel) {
                         onCheckedChange = {
                             signIn = !signIn
                             logIn = !logIn
+                            userVM.successMessage.value = ""
                             userVM.errorMessage.value = ""
                         }
                     )

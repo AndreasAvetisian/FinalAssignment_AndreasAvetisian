@@ -18,6 +18,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 
@@ -29,7 +32,7 @@ const val SETTINGS_ROUTE = "settings"
 fun MainView() {
     val userVM = viewModel<UserViewModel>()
 
-    if(userVM.username.value.isEmpty()){
+    if(userVM.successMessage.value.isEmpty()){
         LoginView(userVM)
         userVM.errorMessage.value = ""
     }else {
@@ -56,7 +59,7 @@ fun MainScaffoldView() {
 fun MainContentView(navController: NavHostController) {
     val reminderVM = viewModel<ReminderViewModel>()
 
-    NavHost(navController = navController, startDestination = REMINDER_ROUTE ){
+    NavHost(navController = navController, startDestination = SETTINGS_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView() }
         composable( route = REMINDER_ROUTE){ ReminderView(reminderVM) }
         composable( route = SETTINGS_ROUTE){ SettingView() }
@@ -147,10 +150,28 @@ fun BottomBarView(navController: NavHostController) {
 
 @Composable
 fun TopBarView(scState: ScaffoldState) {
-
     //var darkMode by remember { mutableStateOf(false)}
-    val userVM = viewModel<UserViewModel>()
     val scope = rememberCoroutineScope()
+
+    var currentUserName by remember { mutableStateOf("") }
+    var currentUserFlag by remember { mutableStateOf("") }
+    val fireStore = Firebase.firestore
+
+    fireStore
+        .collection("userNames")
+        .document(Firebase.auth.currentUser?.uid.toString())
+        .get()
+        .addOnSuccessListener {
+            currentUserName = it.get("userName").toString()
+        }
+
+    fireStore
+        .collection("flags")
+        .document(Firebase.auth.currentUser?.uid.toString())
+        .get()
+        .addOnSuccessListener {
+            currentUserFlag = it.get("countryFlag").toString()
+        }
 
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -174,12 +195,12 @@ fun TopBarView(scState: ScaffoldState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "https://countryflagsapi.com/png/${userVM.countryName.value}",
+                model = "https://countryflagsapi.com/png/${currentUserFlag}",
                 contentDescription = "",
                 modifier = Modifier.size(36.dp)
             )
             Text(
-                text = userVM.username.value,
+                text = currentUserName,
                 color = Color.White,
                 modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
             )
@@ -192,6 +213,17 @@ fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState) {
 
     val userVM = viewModel<UserViewModel>()
     val scope = rememberCoroutineScope()
+
+    var currentUserName by remember { mutableStateOf("") }
+    val fireStore = Firebase.firestore
+
+    fireStore
+        .collection("userNames")
+        .document(Firebase.auth.currentUser?.uid.toString())
+        .get()
+        .addOnSuccessListener {
+            currentUserName = it.get("userName").toString()
+        }
 
     Column(
         modifier = Modifier
@@ -238,7 +270,7 @@ fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = userVM.username.value,
+                text = currentUserName,
                 fontSize = 20.sp,
                 color = Color(0xFF4586E3)
             )
