@@ -33,9 +33,7 @@ const val SETTINGS_ROUTE = "settings"
 @Composable
 fun MainView() {
     val userVM = viewModel<UserViewModel>()
-//------------------------------------------------------------------------
-    //userVM.successMessage.value = "Logged in successfully"
-//------------------------------------------------------------------------
+
     if(userVM.successMessage.value.isEmpty()){
         LoginView(userVM)
         userVM.errorMessage.value = ""
@@ -46,7 +44,6 @@ fun MainView() {
 
 @Composable
 fun MainScaffoldView() {
-    //val darkMode = remember { mutableStateOf(false)}
     val navController = rememberNavController()
     val scState = rememberScaffoldState( rememberDrawerState(DrawerValue.Closed) )
 
@@ -114,8 +111,6 @@ fun SettingView() {
         .addOnSuccessListener {
             currentUserFlag = it.get("countryFlag").toString()
         }
-
-    //var darkMode by remember { mutableStateOf(false)}
 
     Column(
         modifier = Modifier
@@ -252,28 +247,11 @@ fun SettingView() {
                 modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)
             )
         }
-
-//        Row(
-//            modifier = Modifier
-//                .padding(0.dp, 10.dp, 0.dp, 0.dp)
-//        ) {
-//            Checkbox(
-//                checked = darkMode,
-//                onCheckedChange = { darkMode = !darkMode }
-//            )
-//            Text(
-//                text = "Dark mode",
-//                color = if (darkMode) Color.White else Color.Black
-//            )
-//        }
-
     }
 }
 
 @Composable
 fun BottomBarView(navController: NavHostController) {
-
-    //var darkMode by remember { mutableStateOf(false)}
 
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -299,7 +277,6 @@ fun BottomBarView(navController: NavHostController) {
 
 @Composable
 fun TopBarView(scState: ScaffoldState) {
-    //var darkMode by remember { mutableStateOf(false)}
     val scope = rememberCoroutineScope()
 
     var currentUserName by remember { mutableStateOf("") }

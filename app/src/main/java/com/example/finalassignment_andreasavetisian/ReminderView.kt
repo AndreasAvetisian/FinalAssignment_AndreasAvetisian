@@ -23,13 +23,12 @@ import com.google.firebase.ktx.Firebase
 fun ReminderView() {
 
     var reminderTitle by remember { mutableStateOf("") }
-    var reminderNotes by remember { mutableStateOf("") }
-    var reminderDate by remember { mutableStateOf("") }
-    var reminderTime by remember { mutableStateOf("") }
 
     var isHidden by remember { mutableStateOf(false) }
 
     val reminderVM = viewModel<ReminderViewModel>()
+
+    var titlesList by remember { mutableStateOf(mutableListOf<String>()) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -49,63 +48,26 @@ fun ReminderView() {
                     OutlinedTextField(
                         value = reminderTitle ,
                         onValueChange = { reminderTitle = it },
-                        label = { Text(text = "Title") },
-                        modifier = Modifier.width(150.dp),
+                        label = { Text(text = "Reminder") },
+                        modifier = Modifier
+                            .width(370.dp)
+                            .padding(24.dp, 0.dp),
                         textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
                     )
 
-                    OutlinedTextField(
-                        value = reminderDate ,
-                        onValueChange = { reminderDate = it },
-                        label = { Text(text = "Date") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    OutlinedTextField(
-                        value = reminderNotes ,
-                        onValueChange = { reminderNotes = it },
-                        label = { Text(text = "Notes") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
-
-                    OutlinedTextField(
-                        value = reminderTime ,
-                        onValueChange = { reminderTime = it },
-                        label = { Text(text = "Time") },
-                        modifier = Modifier.width(150.dp),
-                        textStyle = TextStyle(color = Color.Black, fontSize = 20.sp)
-                    )
                 }
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(0.dp, 10.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedButton(
                         onClick = {
-                            reminderVM
-                                .addReminder(
-                                    reminderTitle,
-                                    reminderNotes,
-                                    reminderDate,
-                                    reminderTime
-                                )
-
-
+                            reminderVM.addReminder(reminderTitle)
                             reminderTitle = ""
-                            reminderNotes = ""
-                            reminderDate = ""
-                            reminderTime = ""
                         },
                         modifier = Modifier.width(150.dp),
                         colors = ButtonDefaults
@@ -113,20 +75,6 @@ fun ReminderView() {
                     ) {
                         Text(
                             text = "Add reminder",
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    OutlinedButton(
-                        onClick = {
-                            /* TODO */
-                        },
-                        modifier = Modifier.width(150.dp),
-                        colors = ButtonDefaults
-                            .buttonColors(backgroundColor = Color.Red, contentColor = Color.Black)
-                    ) {
-                        Text(
-                            text = "Delete all",
                             fontSize = 16.sp
                         )
                     }
@@ -150,21 +98,6 @@ fun ReminderView() {
 
         Divider(thickness = 2.dp)
 
-//---------------------------------------------------------------------------------
-
-        var reminderTitleList by remember {
-            mutableStateOf(mutableListOf<String>())
-        }
-//        var reminderNotesList by remember {
-//            mutableStateOf(mutableListOf<String>())
-//        }
-//        var reminderDateList by remember {
-//            mutableStateOf(mutableListOf<String>())
-//        }
-//        var reminderTimeList by remember {
-//            mutableStateOf(mutableListOf<String>())
-//        }
-
         val fireStore = Firebase.firestore
         fireStore
             .collection("reminders")
@@ -172,107 +105,42 @@ fun ReminderView() {
             .get()
             .addOnSuccessListener {
 
-                var titleValue = mutableListOf<String>()
-//                var notesValue = mutableListOf<String>()
-//                var dateValue = mutableListOf<String>()
-//                var timeValue = mutableListOf<String>()
-                for (doc in it) {
+                val titles = mutableListOf<String>()
+                for (document in it) {
 
-                    titleValue.add(doc.get("title").toString())
-                    reminderTitleList = titleValue
-
-//                    notesValue.add(doc.get("notes").toString())
-//                    reminderNotesList = notesValue
-//
-//                    dateValue.add(doc.get("date").toString())
-//                    reminderDateList = dateValue
-//
-//                    timeValue.add(doc.get("time").toString())
-//                    reminderTimeList = timeValue
+                    titles.add( document.get("title").toString() )
+                    titlesList = titles
 
                 }
 
             }
 
-        reminderTitleList.forEach { 
-            Text(text = it)
-        }
-//        reminderNotesList.forEach {
-//            Text(text = it)
-//        }
-//        reminderDateList.forEach {
-//            Text(text = it)
-//        }
-//        reminderTimeList.forEach {
-//            Text(text = it)
-//        }
+        LazyColumn {
+            items(titlesList) {
+                if (it.isNotEmpty()) {
+                    Card(
+                        modifier = Modifier
+                            .width(370.dp)
+                            .padding(24.dp, 12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFF2377A1))
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-//----------------------------------------------------------------------------------
-
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(155.dp)
-//                .padding(24.dp, 12.dp)
-//        ) {
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(Color(0xFF2377A1))
-//                    .padding(10.dp),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxHeight()
-//                ) {
-//                    Text(
-//                        text = "Title: ",
-//                        fontSize = 20.sp,
-//                        color = Color.Black
-//                    )
-//                    Text(
-//                        text = "Notes: ",
-//                        fontSize = 20.sp,
-//                        color = Color.Black
-//                    )
-//                    Text(
-//                        text = "Date: ",
-//                        fontSize = 20.sp,
-//                        color = Color.Black
-//                    )
-//                    Text(
-//                        text = "Time: ",
-//                        fontSize = 20.sp,
-//                        color = Color.Black
-//                    )
-//                }
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxHeight(),
-//                    verticalArrangement = Arrangement.SpaceBetween,
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Checkbox(
-//                        checked = false,
-//                        onCheckedChange = {  }
-//                    )
-//                    Text(text = "Id: ")
-//                    Icon(
-//                        painter = painterResource(R.drawable.ic_delete),
-//                        contentDescription = "",
-//                        tint = Color.Red,
-//                        modifier = Modifier.clickable {
-//                        /* TODO */
-//                        } // Modifier.clickable
-//                    ) // Icon
-//                } // Column
-//            } // Row
-//        } // Card
-
-
+                            Text(
+                                text = it,
+                                fontSize = 20.sp,
+                                color = Color.Black
+                            )
+                        } // Row
+                    } // Card
+                } // if statement
+            } // items
+        } // Lazy Column
     } //  Main Column
 } // Composable
-
-// https://countryflagapi.com/png/Vientam
