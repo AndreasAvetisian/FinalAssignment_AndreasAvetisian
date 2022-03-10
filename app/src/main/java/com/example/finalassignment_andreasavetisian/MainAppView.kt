@@ -59,7 +59,7 @@ fun MainScaffoldView() {
 @Composable
 fun MainContentView(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = REMINDER_ROUTE ){
+    NavHost(navController = navController, startDestination = HOME_ROUTE ){
         composable( route = HOME_ROUTE ){ HomeView() }
         composable( route = REMINDER_ROUTE){ ReminderView() }
         composable( route = SETTINGS_ROUTE){ SettingView() }
@@ -75,7 +75,50 @@ fun HomeView() {
             .background(Color.White)
             .padding(10.dp)
     ) {
-        Text(text = "HOME", color = Color.Black)
+        Row(
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 0.dp, 10.dp)
+        ) {
+            Text(
+                text = "Main page",
+                fontSize = 24.sp,
+                color = Color.Black
+            )
+        }
+
+        Divider(thickness = 2.dp)
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(0.915f),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = "This is s reminder application.",
+                    fontSize = 24.sp,
+                    color = Color(0xFF4586E3)
+                )
+                Text(
+                    text = "To change your data go to SETTINGS.",
+                    fontSize = 24.sp,
+                    color = Color(0xFF4586E3)
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Divider(thickness = 2.dp)
+                Text(
+                    text = "Made by Andreas Avetisian DIN20SP",
+                    fontSize = 22.sp,
+                    color = Color(0xFF4586E3)
+                )
+            }
+        }
     }
 }
 
@@ -382,6 +425,8 @@ fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState) {
             )
         }
 
+        Divider(thickness = 2.dp)
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -401,6 +446,8 @@ fun DrawerLayoutView(navController: NavHostController, scState: ScaffoldState) {
                 color = Color(0xFF4586E3)
             )
         }
+
+        Divider(thickness = 2.dp)
 
         Column(
             modifier = Modifier
